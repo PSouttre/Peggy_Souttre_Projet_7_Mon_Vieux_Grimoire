@@ -1,48 +1,19 @@
-const http = require("http");
-const app = require("./app");
+// on importe le package HTTP natif de Node
+import { createServer } from "http";
+import app from "./app.js";
 
-const normalizePort = (val) => {
-  const port = parseInt(val, 10);
+// on import notre app et on lui set un port
+const port = process.env.PORT || "3000";
 
-  if (isNaN(port)) {
-    return val;
-  }
-  if (port >= 0) {
-    return port;
-  }
-  return false;
-};
-const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
-const errorHandler = (error) => {
-  if (error.syscall !== "listen") {
-    throw error;
-  }
-  const address = server.address();
-  const bind =
-    typeof address === "string" ? "pipe " + address : "port: " + port;
-  switch (error.code) {
-    case "EACCES":
-      console.error(bind + " requires elevated privileges.");
-      process.exit(1);
-      break;
-    case "EADDRINUSE":
-      console.error(bind + " is already in use.");
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-};
+// On créé un server avec notre app express en parametre
+const server = createServer(app);
 
-const server = http.createServer(app);
-
-server.on("error", errorHandler);
+// eventListener
 server.on("listening", () => {
-  const address = server.address();
-  const bind = typeof address === "string" ? "pipe " + address : "port " + port;
-  console.log("Listening on " + bind);
+  console.log("Listening on http://localhost:" + port);
 });
 
+// on demande au server d'écouter le port
 server.listen(port);
