@@ -1,17 +1,24 @@
 import { Router } from "express";
+
 // services
-import { getBooks } from "../service/booksService.js";
+import {
+  getBooks,
+  getBookById,
+  createBook,
+  modifyBook,
+  deleteBook,
+} from "../service/booksService.js";
 
 const router = Router();
 
 router.get("/", getBooks);
 
-// router.get("/:id", getBookById);
+router.get("/:id", getBookById);
 
-// router.post()
+router.post("/", createBook);
 
-// router.delete()
+router.put("/:id", modifyBook);
 
-// router.put()
+router.delete("/:id", deleteBook);
 
 export default router;
