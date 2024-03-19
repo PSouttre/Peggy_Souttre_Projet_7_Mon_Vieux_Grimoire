@@ -1,6 +1,6 @@
 import User from "../models/User.js";
-import { bcrypt } from "bcrypt";
-import { jwt } from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export const signup = (req, res, next) => {
   // on appelle la fonction de hachage de bcryptds notre MDP et on demande de saler le MDP 10 fois
@@ -34,7 +34,7 @@ export const login = (req, res, next) => {
       } else {
         // On compare le MDP entré avec le hash enregistré dans la BDD
         bcrypt
-          .compare(res.body.password, user.password)
+          .compare(req.body.password, user.password)
           .then((valid) => {
             // si ne correspondent pas erreur 401 unauthorized
             if (!valid) {
@@ -50,7 +50,7 @@ export const login = (req, res, next) => {
                   //UserId de l'utilisateur
                   { userId: user._id },
                   //Clé secrète pour l'encodage
-                  "RANDOM_TOKEN_SECRET",
+                  process.env.JWT_SECRET_KEY,
                   //Argument de configuration => durée d'expiration du token
                   { expiresIn: "24h" }
                 ),

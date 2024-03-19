@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { auth } from "../middleware/auth.js";
-import { multer } from "multer";
+import { isValidJwt } from "../middleware/auth.js";
+import multer from "../middleware/multer-config.js";
 
 // services
 import {
@@ -9,18 +9,18 @@ import {
   createBook,
   modifyBook,
   deleteBook,
-  getBestBooks,
+  // getBestBooks,
 } from "../service/booksService.js";
 
 const router = Router();
 
 // app.use('/images', express.static(path.join(__dirname, 'images')));
 
-router.get("/", auth, getBooks);
-router.get("/:id", auth, getBookById);
+router.get("/", isValidJwt, getBooks);
+router.get("/:id", isValidJwt, getBookById);
 // router.get("/bestrating", getBestBooks);
-router.post("/", auth, multer, createBook);
-router.put("/:id", auth, multer, modifyBook);
-router.delete("/:id", auth, deleteBook);
+router.post("/", isValidJwt, multer, createBook);
+router.put("/:id", isValidJwt, multer, modifyBook);
+router.delete("/:id", isValidJwt, deleteBook);
 
 export default router;

@@ -1,9 +1,9 @@
-import { jwt } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 //Middleware qui permet d'extraire les infos contenues ds le token
-module.exports = (req, res, next) => {
+export const isValidJwt = (req, res, next) => {
   try {
-    const token = req.headers.authorization.split("")[1];
+    const token = req.headers.authorization.split(" ")[1]; // Bearer lkqdjfgmosierhgmohz
     // On décode le token
     const decodedToken = jwt.verify(token, "RANDOM_TOKEN_SECRET");
     //On récupère l'userId de ce token décodé
@@ -12,6 +12,8 @@ module.exports = (req, res, next) => {
     req.auth = {
       userId: userId,
     };
+
+    next();
   } catch (error) {
     res.status(401).json({ error });
   }

@@ -1,4 +1,4 @@
-import { multer } from "multer";
+import multer from "multer";
 
 const MIME_TYPES = {
   "image/jpg": "jpg",
@@ -20,4 +20,4 @@ const storage = multer.diskStorage({
 });
 
 //On exporte multer configuré, on lui passe la const storage et on lui indique de gérer uniquement le téléchargements de fichiers image.
-module.exports = multer({ storage }).single("image");
+export default multer({ storage }).single("image");

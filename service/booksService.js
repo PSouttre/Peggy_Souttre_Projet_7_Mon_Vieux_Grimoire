@@ -1,3 +1,4 @@
+import { log } from "console";
 import Book from "../models/Book.js";
 import fs from "fs";
 
@@ -15,7 +16,8 @@ export const getBooks = (req, res) => {
 };
 
 //ROUTE POST
-export const createBook = (req, res, next) => {
+export const createBook = (req, res) => {
+  console.log(req);
   // on convertit le corps de la requête
   const bookObject = JSON.parse(req.body.book);
   // on supprime l'userid de la requête
@@ -30,7 +32,7 @@ export const createBook = (req, res, next) => {
     }`,
   });
 
-  thing
+  book
     .save()
     .then(() => {
       res.status(201).json({
