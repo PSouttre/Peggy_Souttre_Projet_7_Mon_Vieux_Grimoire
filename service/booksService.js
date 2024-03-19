@@ -1,4 +1,4 @@
-import Book from "./models/Book.js";
+import Book from "../models/Book.js";
 
 //ROUTE GET QUI RENVOIE TOUS LES BOOKS DS LA BDD
 export const getBooks = (req, res) => {
@@ -84,3 +84,8 @@ export const deleteBook = (req, res, next) => {
       });
     });
 };
+
+//RENVOI D'UN TABLEAU DES 3 LIVRES DE LA BDD AYANT LA MEILLEURE NOTE
+// export const getBestBooks = (req, res, next) => {
+
+// };
