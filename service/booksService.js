@@ -1,4 +1,5 @@
 import Book from "../models/Book.js";
+import fs from "fs";
 
 //ROUTE GET QUI RENVOIE TOUS LES BOOKS DS LA BDD
 export const getBooks = (req, res) => {
@@ -89,16 +90,25 @@ export const modifyBook = (req, res, next) => {
 
 //SUPPRRESSION D'UN OBJET
 export const deleteBook = (req, res, next) => {
-  Book.deleteOne({ _id: req.params.id })
-    .then(() => {
-      res.status(200).json({
-        message: "Supprimé!",
-      });
+  Book.findOne({ _id: req.params.id })
+    .then((book) => {
+      if (book.userId != req.auth.userId) {
+        res.status(401).json({ message: "Non autorisé" });
+      } else {
+        //on utilise le fait de savoir que notre url d'image contient un segment /images/ pour séparer le nom du fichier
+        const filename = book.imageUrl.split("/images/")[1];
+        // on utilise la fonction unlink du package fs pour supprimer ce fichier
+        fs.unlink(`images/${filename}`, () => {
+          Book.deleteOne({ _id: req.params.id })
+            .then(() => {
+              res.status(200).json({ message: "Objet supprimé !" });
+            })
+            .catch((error) => res.status(401).json({ error }));
+        });
+      }
     })
     .catch((error) => {
-      res.status(400).json({
-        error: error,
-      });
+      res.status(500).json({ error });
     });
 };
 
