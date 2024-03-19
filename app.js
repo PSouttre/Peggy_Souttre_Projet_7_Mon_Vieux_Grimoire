@@ -1,5 +1,6 @@
 import express, { json } from "express";
 import routes from "./routes/routes.js";
+// import path from "path";
 
 // bdd
 import mongoose from "mongoose";

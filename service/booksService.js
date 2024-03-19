@@ -15,14 +15,20 @@ export const getBooks = (req, res) => {
 
 //ROUTE POST
 export const createBook = (req, res, next) => {
+  // on convertit le corps de la requête
+  const bookObject = JSON.parse(req.body.book);
+  // on supprime l'userid de la requête
+  delete bookObject._id;
+  delete bookObject._userId;
   const book = new Book({
-    title: req.body.title,
-    author: req.body.author,
-    imageUrl: req.body.imageUrl,
-    year: req.body.year,
-    genre: req.body.genre,
-    userId: req.body.userId,
+    ...bookObject,
+    // on remplace par l'userId extrait du token par le middleware d'authentification
+    userId: req.auth.userId,
+    imageUrl: `${req.protocol}://${req.get("host")}/images/${
+      req.file.filename
+    }`,
   });
+
   thing
     .save()
     .then(() => {
@@ -50,20 +56,31 @@ export const getBookById = (req, res) => {
 
 //MODIFICATION D'UN OBJET
 export const modifyBook = (req, res, next) => {
-  const book = new Book({
-    _id: req.params.id,
-    title: req.body.title,
-    author: req.body.author,
-    imageUrl: req.body.imageUrl,
-    year: req.body.year,
-    genre: req.body.genre,
-    userId: req.body.userId,
-  });
-  Book.updateOne({ _id: req.params.id }, book)
-    .then(() => {
-      res.status(201).json({
-        message: "Mise à jour du livre réussie !",
-      });
+  //on regarde si req.file existe ou non
+  const bookObject = req.file
+    ? {
+        //s'il existe on traite la nouvelle image
+        ...JSON.parse(req.body.thing),
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${
+          req.file.filename
+        }`,
+      }
+    : // sinon on traite simplement l'objet entrant
+      { ...req.body };
+
+  delete bookObject._userId;
+  Book.findOne({ _id: req.params.id })
+    .then((book) => {
+      if (book.userId != req.auth.userId) {
+        res.status(401).json({ message: "Non autorisé" });
+      } else {
+        Book.updateOne(
+          { _id: req.params.id },
+          { ...bookObject, _id: req.params.id }
+        )
+          .then(() => res.status(200).json({ message: "Objet modifié !" }))
+          .catch((error) => res.status(401).json({ error }));
+      }
     })
     .catch((error) => {
       res.status(400).json({ error });
