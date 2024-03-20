@@ -2,8 +2,8 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export const signup = (req, res, next) => {
-  // on appelle la fonction de hachage de bcryptds notre MDP et on demande de saler le MDP 10 fois
+export const signup = (req, res) => {
+  // on appelle la fonction de hachage de bcryptd notre MDP et on demande de saler le MDP 10 fois
   bcrypt
     .hash(req.body.password, 10)
     // On reçoit le hash généré

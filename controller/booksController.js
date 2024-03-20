@@ -9,7 +9,8 @@ import {
   createBook,
   modifyBook,
   deleteBook,
-  // getBestBooks,
+  getBestBooks,
+  postRating,
 } from "../service/booksService.js";
 
 const router = Router();
@@ -18,9 +19,10 @@ const router = Router();
 
 router.get("/", isValidJwt, getBooks);
 router.get("/:id", isValidJwt, getBookById);
-// router.get("/bestrating", getBestBooks);
+router.get("/bestrating", getBestBooks);
 router.post("/", isValidJwt, multer, createBook);
 router.put("/:id", isValidJwt, multer, modifyBook);
 router.delete("/:id", isValidJwt, deleteBook);
+router.post("/:id/rating", isValidJwt, postRating);
 
 export default router;

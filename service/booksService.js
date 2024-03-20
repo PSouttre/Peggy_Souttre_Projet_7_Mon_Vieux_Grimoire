@@ -46,7 +46,7 @@ export const createBook = (req, res) => {
 
 //RECUPERATION D'UN BOOK SPECIFIQUE
 export const getBookById = (req, res) => {
-  Book.finOne({
+  Book.findOne({
     _id: req.params.id,
   })
     .then((book) => {
@@ -114,7 +114,24 @@ export const deleteBook = (req, res, next) => {
     });
 };
 
-//RENVOI D'UN TABLEAU DES 3 LIVRES DE LA BDD AYANT LA MEILLEURE NOTE
-// export const getBestBooks = (req, res, next) => {
+//NOTATION D'UN LIVRE
+export const postRating = (req, res) => {
+  const rating = req.body.rating;
+  if (rating < 0 || rating > 5) {
+    res
+      .status(400)
+      .json({ message: " La note doit être comprise entre 0 et 5" });
+  }
+};
 
-// };
+//RENVOI D'UN TABLEAU DES 3 LIVRES DE LA BDD AYANT LA MEILLEURE NOTE
+export const getBestBooks = (req, res, next) => {
+  //On récupère tous les livres
+  Book.find()
+    //On trie dans l'ordre décroissant
+    .sort({ averageRating: -1 })
+    //On limite le nb de résultats retournés à 3
+    .limit(3)
+    .then((books) => res.status(200).json(books))
+    .catch((error) => res.status(404).json({ error }));
+};
