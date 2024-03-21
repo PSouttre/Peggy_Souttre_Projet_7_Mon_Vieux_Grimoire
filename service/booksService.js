@@ -1,4 +1,4 @@
-import { log } from "console";
+import { error, log } from "console";
 import Book from "../models/Book.js";
 import fs from "fs";
 
@@ -63,7 +63,7 @@ export const modifyBook = (req, res, next) => {
   const bookObject = req.file
     ? {
         //s'il existe on traite la nouvelle image
-        ...JSON.parse(req.body.thing),
+        ...JSON.parse(req.body.book),
         imageUrl: `${req.protocol}://${req.get("host")}/images/${
           req.file.filename
         }`,
@@ -75,7 +75,7 @@ export const modifyBook = (req, res, next) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => {
       if (book.userId != req.auth.userId) {
-        res.status(401).json({ message: "Non autorisé" });
+        res.status(403).json({ message: "Requête non autorisée" });
       } else {
         Book.updateOne(
           { _id: req.params.id },
@@ -116,12 +116,61 @@ export const deleteBook = (req, res, next) => {
 
 //NOTATION D'UN LIVRE
 export const postRating = (req, res) => {
+  // La note du livre doit être comprise entre 0 et 5
   const rating = req.body.rating;
+  const userId = req.body.userId;
+
   if (rating < 0 || rating > 5) {
     res
       .status(400)
       .json({ message: " La note doit être comprise entre 0 et 5" });
   }
+
+  Book.findById(req.params.id)
+    .then((book) => {
+      if (!book) {
+        res.status(404).json({ message: " Livre non trouvé" });
+      }
+
+      if (userId !== req.auth.userId) {
+        res.status(401).json({ message: "Non autorisé" });
+      }
+
+      //La note doit correspondre à l'userId d'un utilisateur
+      //On vérifie si l'utilisateur a déjà voté
+      const userRating = book.ratings.find(
+        (rating) => rating.userId === userId
+      );
+
+      if (userRating) {
+        res.status(400).json({ error: "L'utilisateur a déjà noté ce livre." });
+      } else {
+        //l'userId + la note sont ajoutés au tableau rating
+        book.ratings.push({ userId, grade: rating });
+      }
+
+      const totalRatings = book.ratings.lenght;
+      const sumRatings = book.ratings.reduce(
+        (sum, rating) => sum + rating.grade,
+        0
+      );
+      book.averageRating = sumRatings / totalRatings;
+
+      book
+        .save()
+        .then((book) => {
+          res.status(200).json(book);
+        })
+        .catch((error) => {
+          res.status(400).json({ error });
+        });
+    })
+    //La note doit être non modifiable
+    // La note moyenne "averageRating" doit être tenue à jour et le livre renvoyé (update ? ) en réponse à la requête
+
+    .catch((error) => {
+      res.status(401).json({ error });
+    });
 };
 
 //RENVOI D'UN TABLEAU DES 3 LIVRES DE LA BDD AYANT LA MEILLEURE NOTE
