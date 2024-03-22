@@ -11,6 +11,19 @@ import authController from "./controller/authController.js";
 
 const app = express();
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  next();
+});
+
 // Permet les interactions entre appli Express et la BDD MongoDB
 mongoose
   .connect(
@@ -23,8 +36,8 @@ mongoose
 app.use(json());
 
 // génération des familles de endpoints
-// eg: localhost:3000/api/books/whatever/you/want....
-// eg: localhost:3000/api/auth/whatever/you/want....
+// eg: localhost:4000/api/books/whatever/you/want....
+// eg: localhost:4000/api/auth/whatever/you/want....
 app.use(`/api/${routes.BOOKS}`, booksController);
 app.use(`/api/${routes.AUTH}`, authController);
 

@@ -3,7 +3,7 @@ import { createServer } from "http";
 import app from "./app.js";
 
 // on import notre app et on lui set un port
-const port = process.env.PORT || "3000";
+const port = process.env.PORT || "4000";
 
 app.set("port", port);
 
