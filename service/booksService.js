@@ -1,4 +1,4 @@
-import { error, log } from "console";
+import { Console } from "console";
 import Book from "../models/Book.js";
 import fs from "fs";
 
@@ -17,22 +17,21 @@ export const getBooks = (req, res) => {
 
 //ROUTE POST
 export const createBook = (req, res) => {
-  console.log(req);
   // on convertit le corps de la requête
   const bookObject = JSON.parse(req.body.book);
   // on supprime l'userid de la requête
   delete bookObject._id;
   delete bookObject._userId;
-  const book = new Book({
+  const newbook = new Book({
     ...bookObject,
     // on remplace par l'userId extrait du token par le middleware d'authentification
     userId: req.auth.userId,
-    imageUrl: `${req.protocol}://${req.get("host")}/images/${
+    imageUrl: `${req.protocol}://${req.get("host")}/images/cover/${
       req.file.filename
     }`,
   });
 
-  book
+  newbook
     .save()
     .then(() => {
       res.status(201).json({
@@ -165,8 +164,6 @@ export const postRating = (req, res) => {
           res.status(400).json({ error });
         });
     })
-    //La note doit être non modifiable
-    // La note moyenne "averageRating" doit être tenue à jour et le livre renvoyé (update ? ) en réponse à la requête
 
     .catch((error) => {
       res.status(401).json({ error });

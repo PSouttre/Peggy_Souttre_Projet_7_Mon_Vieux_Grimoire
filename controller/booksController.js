@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { isValidJwt } from "../middleware/auth.js";
 import multer from "../middleware/multer-config.js";
+import { optimizeImage } from "../middleware/optimizeImage.js";
 
 // services
 import {
@@ -17,10 +18,14 @@ const router = Router();
 
 // app.use('/images', express.static(path.join(__dirname, 'images')));
 
+// GET
+router.get("/", getBooks);
 router.get("/bestrating", getBestBooks);
-router.get("/", isValidJwt, getBooks);
-router.get("/:id", isValidJwt, getBookById);
-router.post("/", isValidJwt, multer, createBook);
+router.get("/:id", getBookById);
+
+// POST
+router.post("/", isValidJwt, multer, optimizeImage, createBook);
+
 router.put("/:id", isValidJwt, multer, modifyBook);
 router.delete("/:id", isValidJwt, deleteBook);
 router.post("/:id/rating", isValidJwt, postRating);
