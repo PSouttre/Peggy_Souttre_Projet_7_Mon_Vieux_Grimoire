@@ -19,12 +19,13 @@ export const optimizeImage = async (req, res, next) => {
     req.file.compressedFileName = req.file.filename + ".webp";
     req.file.compressedFilePath = req.file.path + ".webp";
 
-    await sharp(req.file.path).resize(200, 200).webp(90).toFile(
-      req.file.compressedFilePath
-      // `./images/cover/${req.file.filename}`, (err, info) => {
-      // if (err) console.log(err);
-      // console.log(info);}
-    );
+    await sharp(req.file.path)
+      .resize(200, 200)
+      .webp(90)
+      .toFile(req.file.compressedFilePath);
+    // `./images/cover/${req.file.filename}`, (err, info) => {
+    // if (err) console.log(err);
+    // console.log(info);}
 
     //Si compression on supprime l'image d'origine
     fs.unlink(req.file.path, (error) => {

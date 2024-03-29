@@ -1,4 +1,4 @@
-import { Console } from "console";
+import { Console, log } from "console";
 import Book from "../models/Book.js";
 import fs from "fs";
 
@@ -73,9 +73,19 @@ export const modifyBook = (req, res, next) => {
   delete bookObject._userId;
   Book.findOne({ _id: req.params.id })
     .then((book) => {
+      // Modification du livre possible que par l'utilisateur qui a créé la fiche
       if (book.userId != req.auth.userId) {
         res.status(403).json({ message: "Requête non autorisée" });
       } else {
+        //On sépare le nom du fichier image existant
+        const filename = book.imageUrl.split("/images/")[1];
+        //Si l'image est modifiée, on supprime l'ancienne
+        req.file &&
+          fs.unlink(`images/${filename}`, (err) => {
+            if (err) console.log(err);
+          });
+
+        //On met le livre à jour
         Book.updateOne(
           { _id: req.params.id },
           { ...bookObject, _id: req.params.id }
