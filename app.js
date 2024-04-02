@@ -40,5 +40,7 @@ app.use(json());
 // eg: localhost:4000/api/auth/whatever/you/want....
 app.use(`/api/${routes.BOOKS}`, booksController);
 app.use(`/api/${routes.AUTH}`, authController);
+// static files
+app.use("/images", express.static("images"));
 
 export default app;

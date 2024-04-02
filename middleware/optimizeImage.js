@@ -1,40 +1,26 @@
 import sharp from "sharp";
 import fs from "fs";
-import path from "path";
 import { error } from "console";
 
-// export const deleteFile = (path) => {
-//   fs.unlink(path, (err) => {
-//     if (err) {
-//       console.error(err);
-//       return;
-//     }
-//   });
-// };
-
 export const optimizeImage = async (req, res, next) => {
-  console.log(req.file.path);
+  console.log(req.file);
   try {
     // On créé le nom et le chemin du fichier pour la version compressée
-    req.file.compressedFileName = req.file.filename + ".webp";
-    req.file.compressedFilePath = req.file.path + ".webp";
+    const filename = req.file.filename;
+    const rawImage = "images/" + req.file.filename;
+    const optimizedImage = "./images/optimized_" + req.file.filename;
 
     await sharp(req.file.path)
       .resize(200, 200)
-      .webp(90)
-      .toFile(req.file.compressedFilePath);
-    // `./images/cover/${req.file.filename}`, (err, info) => {
-    // if (err) console.log(err);
-    // console.log(info);}
+      .toFile(optimizedImage, (err, info) => {
+        if (err) console.log("ERROR SHARP", err);
 
-    //Si compression on supprime l'image d'origine
-    fs.unlink(req.file.path, (error) => {
-      if (error) console.log(error);
-    });
+        fs.unlink(rawImage, (error) => {
+          if (error) console.log("ERROR UNLINK", error);
+        });
+      });
 
     next();
-
-    // deleteFile(req.file.path);
   } catch (error) {
     res.status(500).json({ toto: "toto", error });
   }

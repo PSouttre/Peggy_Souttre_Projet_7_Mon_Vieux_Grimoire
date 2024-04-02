@@ -1,3 +1,4 @@
+import * as path from "path";
 import multer from "multer";
 
 const MIME_TYPES = {
@@ -14,9 +15,9 @@ const storage = multer.diskStorage({
   },
   //fonction filename qui indique à multer d'utiliser le nom d'origine, de remplacer les espaces par des _ et d'ajouter un timestamp comme nom de fichier
   filename: (req, file, callback) => {
-    const name = file.originalname.split("").join("_");
+    const name = path.parse(file.originalname.split(" ").join("_")).name;
     const extension = MIME_TYPES[file.mimetype];
-    callback(null, name + Date.now() + "." + extension);
+    callback(null, name + "__" + Date.now() + "." + extension);
   },
 });
 

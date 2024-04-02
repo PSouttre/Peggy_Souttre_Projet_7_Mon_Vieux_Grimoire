@@ -26,7 +26,7 @@ export const createBook = (req, res) => {
     ...bookObject,
     // on remplace par l'userId extrait du token par le middleware d'authentification
     userId: req.auth.userId,
-    imageUrl: `${req.protocol}://${req.get("host")}/images/cover/${
+    imageUrl: `${req.protocol}://${req.get("host")}/images/optimized_${
       req.file.filename
     }`,
   });
@@ -171,7 +171,7 @@ export const postRating = (req, res) => {
           res.status(200).json(book);
         })
         .catch((error) => {
-          res.status(400).json({ error });
+          -console.log("pas bon");
         });
     })
 
