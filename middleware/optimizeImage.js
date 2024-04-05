@@ -12,7 +12,7 @@ export const optimizeImage = async (req, res, next) => {
 
     sharp.cache(false);
     sharp(req.file.path)
-      .resize(210, 300)
+      .resize(206, 260)
       .toFile(optimizedImage, (err, info) => {
         if (err) console.log("ERROR SHARP", err);
 
