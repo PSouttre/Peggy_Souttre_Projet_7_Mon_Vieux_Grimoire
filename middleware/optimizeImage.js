@@ -10,8 +10,9 @@ export const optimizeImage = async (req, res, next) => {
     const rawImage = "images/" + req.file.filename;
     const optimizedImage = "./images/optimized_" + req.file.filename;
 
-    await sharp(req.file.path)
-      .resize(200, 200)
+    sharp.cache(false);
+    sharp(req.file.path)
+      .resize(210, 300)
       .toFile(optimizedImage, (err, info) => {
         if (err) console.log("ERROR SHARP", err);
 
