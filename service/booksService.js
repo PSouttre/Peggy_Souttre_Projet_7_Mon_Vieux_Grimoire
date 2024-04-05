@@ -158,7 +158,7 @@ export const postRating = (req, res) => {
         book.ratings.push({ userId, grade: rating });
       }
 
-      const totalRatings = book.ratings.lenght;
+      const totalRatings = book.ratings.length;
       const sumRatings = book.ratings.reduce(
         (sum, rating) => sum + rating.grade,
         0
@@ -171,7 +171,7 @@ export const postRating = (req, res) => {
           res.status(200).json(book);
         })
         .catch((error) => {
-          -console.log("pas bon");
+          console.log("pas bon");
         });
     })
 

@@ -22,7 +22,7 @@ export const signup = (req, res) => {
 };
 
 export const login = (req, res, next) => {
-  // On vérifie qe lemail utilisateur correspond à un utilisateur existant de la BDD
+  // On vérifie que lemail utilisateur correspond à un utilisateur existant de la BDD
   User.findOne({ email: req.body.email })
     .then((user) => {
       // Si n'existe pas => erreur 401 unauthorized
