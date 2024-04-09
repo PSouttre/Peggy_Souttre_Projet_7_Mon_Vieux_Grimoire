@@ -1,9 +1,8 @@
-import { Console, log } from "console";
 import Book from "../models/Book.js";
 import fs from "fs";
 
 //ROUTE GET QUI RENVOIE TOUS LES BOOKS DS LA BDD
-export const getBooks = (req, res) => {
+export const getBooks = (_, res) => {
   Book.find()
     .then((books) => {
       res.status(200).json(books);
@@ -85,7 +84,6 @@ export const modifyBook = (req, res, next) => {
             if (err) console.log(err);
           });
 
-        //On met le livre à jour
         Book.updateOne(
           { _id: req.params.id },
           { ...bookObject, _id: req.params.id }
@@ -99,7 +97,7 @@ export const modifyBook = (req, res, next) => {
     });
 };
 
-//SUPPRRESSION D'UN OBJET
+//SUPPRESSION D'UN OBJET
 export const deleteBook = (req, res, next) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => {
@@ -181,7 +179,7 @@ export const postRating = (req, res) => {
 };
 
 //RENVOI D'UN TABLEAU DES 3 LIVRES DE LA BDD AYANT LA MEILLEURE NOTE
-export const getBestBooks = (req, res, next) => {
+export const getBestBooks = (_, res) => {
   //On récupère tous les livres
   Book.find()
     //On trie dans l'ordre décroissant

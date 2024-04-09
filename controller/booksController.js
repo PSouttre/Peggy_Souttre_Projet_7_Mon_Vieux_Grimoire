@@ -16,8 +16,6 @@ import {
 
 const router = Router();
 
-// app.use('/images', express.static(path.join(__dirname, 'images')));
-
 // GET
 router.get("/", getBooks);
 router.get("/bestrating", getBestBooks);
